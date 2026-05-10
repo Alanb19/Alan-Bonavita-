@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Mobility Core Gymnast – rutina semanal de movilidad y core" />
+  <title>Mobility Core Gymnast</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="app-header">
+    <h1>🧠 Mobility Core Gymnast</h1>
+    <div class="week-progress-wrap">
+      <div class="week-label">Progreso semanal</div>
+      <div class="week-bar-bg">
+        <div class="week-bar-fill" id="weekBarFill"></div>
+      </div>
+      <span class="week-count" id="weekCount">0 / 0</span>
+    </div>
+    <button class="reset-all-btn" id="resetAllBtn" title="Reiniciar toda la semana">↺ Reiniciar semana</button>
+  </header>
+
+  <main class="container" id="days" role="main"></main>
+
+  <script src="data.js" defer></script>
+  <script src="app.js" defer></script>
+</body>
+</html>
