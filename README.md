@@ -1,148 +1,88 @@
-# Alan-Bonavita-
- AI Food Operations Specialist | Claude Expert
-# 👋 Hola, soy Alan Nicolas Bonavita 
+# Hola, soy Alan 👋
 
-## AI Operations Specialist | Food & Supply Chain
+Soy responsable de Producción y Compras en **[Nora Real Food](https://norarealfood.com)** (Barcelona), donde gestiono la operativa diaria de una cocina central que produce **2.000 pedidos/día** con 20 proveedores activos.
 
-> Experto en operaciones alimentarias transformando procesos con IA.
-> 10 años en cocina profesional + 2 años en producción y compras + Claude AI = un perfil que prácticamente no existe en el mercado.
+Lo que hago distinto: no espero a que el departamento de TI nos dé herramientas. Las construyo yo, con un workflow AI-augmented (Python + Claude + VS Code + Git).
 
------
+---
 
-## 🧠 Stack de IA
+## Qué construí — en uso real en producción
 
-![Claude](https://img.shields.io/badge/Claude_AI-Expert-D97757?style=for-the-badge&logo=anthropic&logoColor=white)
-![n8n](https://img.shields.io/badge/n8n-Automation-EA4B71?style=for-the-badge)
-![Make](https://img.shields.io/badge/Make.com-Automation-6D00CC?style=for-the-badge)
-![Prompt Engineering](https://img.shields.io/badge/Prompt_Engineering-Advanced-0A66C2?style=for-the-badge)
+### 🧮 Calculadora Nora
+Herramienta interactiva offline (HTML + JavaScript) que los responsables de cocina usan todos los días para calcular cantidades por receta según la demanda. Dinámica, ágil e intuitiva — adoptada por el equipo sin formación externa.
+👉 Repo: [recipe-calculator-app](https://github.com/Alanb19/recipe-calculator-app)
 
------
+### 🏗️ ERP NRF — en desarrollo activo
+ERP modular interno en **Python + Flask + SQLite** con tres módulos (Compras, Previsiones, Inputs) para reemplazar el flujo de Excels semanales. Ingesta de archivos operativos, modelo de datos relacional y vistas por módulo.
 
-## 🏆 Certificaciones Oficiales
+### 📊 Control Maestro de Stock semanal
+Sistema digital con 5 módulos (Dashboard, Stock 141 referencias × 46 columnas, Plan de Platos, Fichas Pendientes, Instrucciones). Es el sistema operativo de la cocina — todo el equipo lo usa cada semana.
 
-|Certificado                        |Emisor                 |Estado      |
-|-----------------------------------|-----------------------|------------|
-|Claude 101                         |Anthropic (Oficial)    |✅ Completado|
-|AI Fluency: Framework & Foundations|Anthropic (Oficial)    |✅ Completado|
-|Introduction to Agent Skills       |Anthropic (Oficial)    |✅ Completado|
-|Claude Code in Action              |Anthropic (Oficial)    |✅ Completado|
-|Elements of AI                     |Universidad de Helsinki|✅ Completado|
+### 🤖 Agentes Claude especializados
+Uno por archivo operativo del flujo de cocina. Aceleran análisis cruzado, validación de stock vs previsión y reporting semanal. Prompt engineering aplicado a operaciones siguiendo las buenas prácticas de Anthropic (Responsible Prompting).
 
+---
 
-> 🔗 Verificables en [anthropic.skilljar.com](https://anthropic.skilljar.com)
+## Lo que se mide
 
------
+- **−€12.000/mes** de coste operativo (rediseño de procesos de compra y stock)
+- **Merma reducida del 7% al 3%** sostenido, con picos del 2%
+- **€60.000/mes en compras** gestionados con 20 proveedores activos
+- **2.000 pedidos/día** coordinados en 3 áreas operativas
+- **Equipo de 3 directos + 17 indirectos** migrado de papel a sistema digital sin formación externa ni consultoras
 
-## 🚀 Proyectos de Portfolio
+---
 
-### 01 — Asistente Inteligente de Compras
+## Stack que uso a diario
 
-> Automatización del análisis de proveedores y gestión de pedidos para el sector alimentario
+| Capa | Herramientas |
+|---|---|
+| **Lenguajes** | Python (asistido con Claude) · JavaScript (básico) · SQL (en aprendizaje activo) |
+| **Datos** | Excel / Sheets avanzado · pandas · openpyxl · SQLite |
+| **IA aplicada** | Claude (Anthropic API) · prompt engineering · agentes especializados · Claude Code |
+| **Web / Backend** | Flask · HTML/CSS básico |
+| **Herramientas** | Git · GitHub · VS Code · terminal |
+| **En aprendizaje** | Power BI (PL-300) · más SQL · Python autónomo |
 
-**Problema:** El proceso manual de comparar cotizaciones, evaluar proveedores y decidir pedidos semanales consume 2-3 horas/semana con alto margen de error humano.
+---
 
-**Solución:** Claude Project configurado con contexto completo del negocio (proveedores, precios históricos, fichas técnicas) que responde en segundos a cualquier consulta de compras.
+## Formación continua
 
-**Resultado:** Reducción del tiempo de análisis de 2h a 8 minutos. Decisiones basadas en datos, no en memoria.
+Estoy en plan de upskilling activo. En curso 2026:
 
-**Herramientas:** `Claude AI` `Claude Projects` `Prompt Engineering`
+- 🎓 Google Advanced Data Analytics Professional Certificate
+- 🎓 Microsoft Power BI Data Analyst Professional Certificate (PL-300)
+- 🎓 Supply Chain Analytics Specialization — Rutgers University
+- 🎓 Anthropic Academy — Building with the Claude API, MCP, Agent Skills
+- 🎓 Improve Your English Communication Skills — Georgia Tech
 
-🔗 [Ver proyecto →](./proyecto-01-asistente-compras/)
+Ya cerrado:
+- ✅ Santander Open Academy 2026 — Prompting responsable: maximiza la IA en tu negocio
 
------
+> Voy a ir agregando aquí los certificados de Anthropic Academy y de los Professional Certificates de Coursera a medida que los cierre.
 
-### 02 — Agente Analizador de Proveedores
+---
 
-> Flujo automático que analiza cotizaciones en PDF y genera recomendaciones de compra
+## En una frase
 
-**Problema:** Comparar cotizaciones de múltiples proveedores requiere trabajo manual, hojas de cálculo y criterio subjetivo.
+Soy operador con dominio real, no técnico que aprendió ops. Construyo soluciones que el equipo usa todos los días — combinando experiencia operativa con las herramientas IA correctas.
 
-**Solución:** Agente que recibe una cotización → Claude la analiza → compara con histórico de precios → genera recomendación estructurada con argumentos.
+---
 
-**Resultado:** Proceso estandarizado, auditable y 15x más rápido.
+## Trabajo en
 
-**Herramientas:** `Claude AI` `n8n` `Google Sheets`
+Abierto a oportunidades **remotas en Europa** como:
+- Demand Planner / Data Analyst con IA
+- Procurement Specialist
+- Operations Coordinator
 
-🔗 [Ver proyecto →](./proyecto-02-analizador-proveedores/)
+en empresas de food, D2C, retail o logística que valoren a alguien que entienda las operaciones por dentro y construya las herramientas que faltan.
 
------
+---
 
-### 03 — Agente de Forecast Semanal Automático
+## Contacto
 
-> Sistema que genera el planning de producción y compras cada lunes de forma autónoma
+📩 **bonavitaalan@gmail.com**
+🔗 [LinkedIn](https://www.linkedin.com/in/alan-bonavita-3abbb7218)
+📍 Barcelona, España
 
-**Problema:** El forecast semanal depende de una persona que analiza datos manualmente cada domingo. Si esa persona falla, el lunes empieza sin información.
-
-**Solución:** Agente que lee datos de ventas de Google Sheets → Claude analiza tendencias y estacionalidad → genera informe completo → llega al email del responsable cada lunes a las 6am.
-
-**Resultado:** Sistema autónomo que no depende de ninguna persona para funcionar.
-
-**Herramientas:** `Claude AI` `n8n` `Google Sheets` `Gmail API`
-
-🔗 [Ver proyecto →](./proyecto-03-forecast-agente/)
-
------
-
-## 📚 Biblioteca de Prompts — Sector Alimentario
-
-Prompts profesionales documentados y listos para usar:
-
-```
-📁 prompts/
-├── demand-planning.md        → Análisis de demanda y forecast
-├── supplier-analysis.md      → Evaluación y comparativa de proveedores
-├── production-planning.md    → Planning semanal de producción
-├── cost-control.md           → Control de costes y mermas
-└── quality-protocol.md       → Gestión de incidencias APPCC
-```
-
-🔗 [Ver biblioteca de prompts →](./prompts/)
-
------
-
-## 💼 Propuesta de Valor
-
-```
-Lo que sé hacer que pocos combinan:
-
-✅ Entiendo los procesos reales de una cocina profesional
-✅ Conozco la cadena de suministro alimentaria desde dentro
-✅ Domino Claude AI a nivel técnico y estratégico
-✅ Construyo agentes y automatizaciones sin código
-✅ Traduzco problemas operativos en soluciones de IA
-```
-
-**Quién me necesita:**
-
-- Empresas de alimentación que quieren automatizar compras y producción
-- Restaurantes y cadenas que necesitan sistemas de gestión inteligentes
-- Consultoras que implementan IA en el sector food & beverage
-- Startups de foodtech buscando expertise operativo + IA
-
------
-
-## 🧩 Sobre Mí
-
-Con 10 años en cocina profesional y 2 años como responsable de producción y compras, conozco los problemas reales del sector alimentario: mermas, roturas de stock, proveedores que fallan, plannings que cambian cada día.
-
-Ahora aplico IA para resolver exactamente esos problemas.
-
-No soy un técnico de IA que aprendió de alimentación. **Soy un experto en alimentación que domina IA.** Eso es lo que las empresas del sector necesitan y no encuentran.
-
------
-
-## 📫 Contacto
-
-[![LinkedIn]
-https://www.linkedin.com/in/alan-bonavita-3abbb7218
-[![Email]
-bonavitaalan@gmail.com
-
------
-
-> *“No soy un técnico de IA que aprendió de alimentación.*
-> *Soy un experto en alimentación que domina IA.”*
-
------
-
-![GitHub Stats](https://github-readme-stats.vercel.app/api?username=TU-USUARIO&show_icons=true&theme=dark&hide_border=true&bg_color=0D1117&title_color=D97757&icon_color=D97757)
