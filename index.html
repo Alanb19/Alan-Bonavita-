@@ -1,574 +1,72 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0f1115">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="K1 Train">
-<title>K1 · Cuaderno de Entrenamiento</title>
-<style>
-  :root{
-    --bg:#0f1115; --bg2:#171a21; --card:#1c2029; --card2:#232834;
-    --line:#2a303c; --txt:#e8ecf3; --muted:#9aa3b2; --accent:#ff5a3c;
-    --accent2:#3ad29f; --blue:#4a9eff; --warn:#ffb13c; --done:#3ad29f;
-    --radius:16px; --shadow:0 4px 20px rgba(0,0,0,.35);
-  }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{margin:0;padding:0}
-  body{
-    background:var(--bg); color:var(--txt);
-    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
-    line-height:1.45; padding:0 0 120px;
-    -webkit-font-smoothing:antialiased;
-    padding-top:env(safe-area-inset-top);
-  }
-  header{
-    text-align:center; padding:22px 16px 10px;
-    background:linear-gradient(180deg,#141821,#0f1115);
-    border-bottom:1px solid var(--line);
-  }
-  header h1{margin:0;font-size:22px;letter-spacing:.5px}
-  header h1 .em{color:var(--accent)}
-  header .sub{color:var(--muted);font-size:13px;margin-top:4px}
-  header .phase{
-    margin-top:10px;display:inline-block;background:var(--card2);
-    border:1px solid var(--line);border-radius:999px;padding:5px 13px;
-    font-size:12px;color:var(--accent2);font-weight:600
-  }
-  .wrap{max-width:560px;margin:0 auto;padding:14px}
+Alan Bonavita
+Operations & Demand Planning · construyo herramientas internas con IA
+📍 Barcelona, España
+Responsable de Producción y Compras en Nora Real Food. Gestiono la operativa diaria de una cocina central que produce 2.000 pedidos/día con 20 proveedores activos. No espero a que el departamento de TI me dé herramientas — las construyo yo, con un workflow AI-augmented (Python + Claude + VS Code + Git).
 
-  /* Day selector */
-  .days{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:6px}
-  .day-btn{
-    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-    color:var(--txt);padding:12px 6px;font-size:13px;font-weight:600;
-    cursor:pointer;transition:.15s;display:flex;flex-direction:column;
-    align-items:center;gap:5px;text-align:center;min-height:74px;justify-content:center;
-  }
-  .day-btn .ico{font-size:22px}
-  .day-btn .dname{font-size:11px;color:var(--muted);font-weight:500}
-  .day-btn.active{border-color:var(--accent);background:var(--card2);box-shadow:0 0 0 1px var(--accent) inset}
-  .day-btn.active .dname{color:var(--accent)}
-  .day-btn:active{transform:scale(.96)}
+Qué construí — en uso real en producción
+🧮 Calculadora Nora
+Herramienta interactiva offline que los responsables de cocina usan todos los días para calcular cantidades por receta según la demanda. Dinámica, ágil e intuitiva — adoptada por el equipo sin formación externa.
 
-  .progress-bar{height:6px;background:var(--card);border-radius:999px;overflow:hidden;margin:14px 0 6px}
-  .progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .3s}
-  .progress-lbl{font-size:12px;color:var(--muted);text-align:right;margin-bottom:8px}
+Stack: HTML, JavaScript · github.com/Alanb19/recipe-calculator-app
 
-  .session-head{display:flex;align-items:baseline;justify-content:space-between;margin:6px 0 4px}
-  .session-head h2{margin:0;font-size:19px}
-  .session-head .meta{font-size:12px;color:var(--muted)}
-  .session-goal{
-    font-size:13px;color:var(--muted);background:var(--bg2);border:1px solid var(--line);
-    border-left:3px solid var(--accent);border-radius:10px;padding:9px 12px;margin:8px 0 14px
-  }
-  .principle{
-    font-size:12.5px;color:var(--accent2);background:rgba(58,210,159,.07);
-    border:1px solid rgba(58,210,159,.25);border-radius:10px;padding:9px 12px;margin:0 0 14px
-  }
+🏗️ ERP NRF — en desarrollo activo
+ERP modular interno con tres módulos (Compras, Previsiones, Inputs) para reemplazar el flujo de Excels semanales. Ingesta de archivos operativos, modelo de datos relacional y vistas por módulo.
 
-  /* Block headers */
-  .blk{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);
-    margin:20px 0 8px;font-weight:700;display:flex;align-items:center;gap:8px}
-  .blk::before{content:"";flex:0 0 18px;height:2px;background:var(--accent);border-radius:2px}
+Stack: Python, Flask, SQLite, pandas, openpyxl, workflow Claude Code + VS Code + Git.
 
-  /* Exercise card */
-  .ex{
-    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-    margin-bottom:11px;overflow:hidden;box-shadow:var(--shadow)
-  }
-  .ex.complete{border-color:rgba(58,210,159,.5)}
-  .ex-head{display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer}
-  .ex-num{
-    flex:0 0 28px;height:28px;border-radius:8px;background:var(--card2);
-    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent)
-  }
-  .ex.complete .ex-num{background:var(--done);color:#08120d}
-  .ex-title{flex:1;min-width:0}
-  .ex-title .name{font-size:15.5px;font-weight:600;line-height:1.25}
-  .ex-title .scheme{font-size:12.5px;color:var(--muted);margin-top:2px}
-  .ex-title .scheme b{color:var(--txt)}
-  .chev{color:var(--muted);font-size:13px;transition:transform .2s;flex:0 0 auto}
-  .ex.open .chev{transform:rotate(90deg)}
+📊 Control Maestro de Stock semanal
+Sistema digital con 5 módulos (Dashboard, Stock 141×46, Plan de Platos, Fichas Pendientes, Instrucciones). Es el sistema operativo de la cocina — todo el equipo lo usa cada semana.
 
-  .ex-body{display:none;padding:0 14px 14px;border-top:1px solid var(--line)}
-  .ex.open .ex-body{display:block}
-  .ex-note{font-size:13px;color:var(--muted);margin:11px 0}
-  .ex-note .tag{color:var(--accent2);font-weight:600}
+Stack: Excel avanzado, fórmulas dinámicas, scripts Python para ingestión y validación.
 
-  /* Sets */
-  .sets{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
-  .set-chip{
-    flex:0 0 auto;min-width:54px;height:46px;border-radius:11px;border:1px solid var(--line);
-    background:var(--bg2);display:flex;flex-direction:column;align-items:center;justify-content:center;
-    cursor:pointer;font-size:11px;color:var(--muted);transition:.12s;user-select:none;gap:1px
-  }
-  .set-chip .sn{font-size:10px}
-  .set-chip .sr{font-size:14px;font-weight:700;color:var(--txt)}
-  .set-chip.on{background:var(--done);border-color:var(--done);color:#08120d}
-  .set-chip.on .sr{color:#08120d}
-  .set-chip:active{transform:scale(.93)}
+🤖 Agentes Claude especializados
+Uno por archivo operativo del flujo de cocina. Aceleran análisis cruzado, validación de stock vs previsión y reporting semanal. Prompt engineering aplicado a operaciones siguiendo las buenas prácticas de Anthropic.
 
-  .inputs{display:flex;gap:9px;margin-top:6px}
-  .field{flex:1}
-  .field label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;letter-spacing:.3px}
-  .field input,.field select{
-    width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:10px;
-    color:var(--txt);padding:10px 11px;font-size:15px;outline:none;-webkit-appearance:none;appearance:none
-  }
-  .field input:focus,.field select:focus{border-color:var(--accent)}
-  .field select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239aa3b2' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 11px center;padding-right:30px}
+Stack: Anthropic Claude API, prompt engineering.
 
-  .ex-actions{display:flex;gap:9px;margin-top:13px;flex-wrap:wrap}
-  .btn{
-    flex:1;min-width:120px;border:1px solid var(--line);background:var(--card2);color:var(--txt);
-    border-radius:11px;padding:11px;font-size:13.5px;font-weight:600;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;gap:7px;text-decoration:none
-  }
-  .btn:active{transform:scale(.97)}
-  .btn.video{color:var(--blue);border-color:rgba(74,158,255,.4)}
-  .btn.rest{color:var(--warn);border-color:rgba(255,177,60,.4)}
+Lo que se mide
+−€12.000/mes de coste operativo
 
-  /* Info day (K1 / pool / rest) */
-  .info-card{
-    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-    padding:18px;text-align:center;box-shadow:var(--shadow)
-  }
-  .info-card .big{font-size:46px;margin-bottom:6px}
-  .info-card h3{margin:0 0 8px;font-size:18px}
-  .info-card p{color:var(--muted);font-size:14px;margin:7px 0}
-  .info-card ul{text-align:left;color:var(--muted);font-size:13.5px;margin:12px auto 0;max-width:320px;padding-left:20px}
-  .info-card li{margin:5px 0}
-  .info-card .hl{color:var(--accent2)}
+Merma reducida del 7% al 3% sostenido (picos del 2%)
 
-  /* Rest timer overlay */
-  .timer-overlay{
-    position:fixed;inset:0;background:rgba(8,10,14,.92);backdrop-filter:blur(6px);
-    display:none;align-items:center;justify-content:center;flex-direction:column;z-index:50;
-    padding-bottom:env(safe-area-inset-bottom)
-  }
-  .timer-overlay.show{display:flex}
-  .timer-ring{position:relative;width:240px;height:240px;margin-bottom:24px}
-  .timer-ring svg{transform:rotate(-90deg)}
-  .timer-ring .num{
-    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-    font-size:62px;font-weight:700;font-variant-numeric:tabular-nums
-  }
-  .timer-sub{color:var(--muted);font-size:14px;margin-bottom:26px;letter-spacing:1px;text-transform:uppercase}
-  .timer-presets{display:flex;gap:11px;margin-bottom:22px}
-  .tp{
-    width:74px;height:74px;border-radius:50%;border:2px solid var(--line);background:var(--card);
-    color:var(--txt);font-size:16px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;gap:1px
-  }
-  .tp small{font-size:10px;color:var(--muted);font-weight:500}
-  .tp.sel{border-color:var(--accent);color:var(--accent)}
-  .timer-ctrls{display:flex;gap:14px}
-  .tc{padding:13px 26px;border-radius:13px;border:none;font-size:15px;font-weight:600;cursor:pointer}
-  .tc.go{background:var(--accent);color:#fff}
-  .tc.close{background:var(--card2);color:var(--txt);border:1px solid var(--line)}
+€60.000/mes en compras gestionados · 20 proveedores activos
 
-  footer{text-align:center;font-size:11px;color:#56607a;margin-top:26px;line-height:1.5}
-  .reset-day{background:none;border:none;color:#56607a;font-size:12px;text-decoration:underline;cursor:pointer;display:block;margin:18px auto 0}
-  .toast{
-    position:fixed;bottom:calc(20px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(20px);
-    background:var(--card2);border:1px solid var(--line);color:var(--txt);padding:11px 18px;border-radius:12px;
-    font-size:13px;opacity:0;transition:.25s;z-index:60;pointer-events:none;box-shadow:var(--shadow)
-  }
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-</style>
-</head>
-<body>
-<header>
-  <h1><span class="em">🥊</span> K1 · Cuaderno</h1>
-  <div class="sub">Fase base · 12 semanas · fuerza → control → potencia</div>
-  <div class="phase">Termina siempre con una serie en el tanque</div>
-</header>
+2.000 pedidos/día coordinados en 3 áreas operativas
 
-<div class="wrap">
-  <div class="days" id="days"></div>
-  <div id="content"></div>
-  <button class="reset-day" id="resetDay">Reiniciar registros de este día</button>
-  <footer>Hecho para entrenar sin depender de nadie · funciona offline · tus datos se guardan en este móvil</footer>
-</div>
+Equipo de 3 directos + 17 indirectos migrado de papel a digital sin formación externa
 
-<!-- Rest timer -->
-<div class="timer-overlay" id="timerOv">
-  <div class="timer-ring">
-    <svg width="240" height="240">
-      <circle cx="120" cy="120" r="110" stroke="#2a303c" stroke-width="12" fill="none"/>
-      <circle id="ringFill" cx="120" cy="120" r="110" stroke="#ff5a3c" stroke-width="12" fill="none"
-        stroke-linecap="round" stroke-dasharray="691" stroke-dashoffset="0"/>
-    </svg>
-    <div class="num" id="timerNum">90</div>
-  </div>
-  <div class="timer-sub">Descanso</div>
-  <div class="timer-presets" id="presets">
-    <button class="tp" data-t="60">60<small>seg</small></button>
-    <button class="tp sel" data-t="90">90<small>seg</small></button>
-    <button class="tp" data-t="120">120<small>seg</small></button>
-  </div>
-  <div class="timer-ctrls">
-    <button class="tc go" id="timerToggle">Iniciar</button>
-    <button class="tc close" id="timerClose">Cerrar</button>
-  </div>
-</div>
+Stack que uso a diario
+Lenguajes	Python (asistido con Claude) · JavaScript (básico) · SQL (en aprendizaje activo)
+Datos	Excel / Sheets avanzado · pandas · openpyxl · SQLite
+IA aplicada	Claude (Anthropic API) · prompt engineering · agentes especializados · Claude Code
+Web / Backend	Flask · HTML/CSS básico
+Herramientas	Git · GitHub · VS Code · terminal
+En aprendizaje	Power BI (PL-300) · más SQL · Python autónomo
+Formación continua
+En curso 2026:
 
-<div class="toast" id="toast"></div>
+Google Advanced Data Analytics Professional Certificate
+Microsoft Power BI Data Analyst Professional Certificate (PL-300)
+Supply Chain Analytics Specialization — Rutgers University
+Anthropic Academy — Building with the Claude API, MCP, Agent Skills
+Improve Your English Communication Skills — Georgia Tech
+Ya cerrado:
 
-<script>
-/* ---------- PROGRAMA ---------- */
-const yt = q => "https://www.youtube.com/results?search_query=" + q;
+Santander Open Academy 2026 — Prompting responsable
+En una frase
+Soy operador con dominio real, no técnico que aprendió ops. Construyo soluciones que el equipo usa todos los días — combinando experiencia operativa con las herramientas IA correctas.
 
-const PROGRAM = {
-  mar: {
-    icon:"💪", name:"Martes", title:"Fuerza A", meta:"60–70 min · construir fuerza",
-    goal:"Aprender a generar fuerza y técnica. No busques peso máximo: busca control y calidad.",
-    blocks:[
-      {label:"Calentamiento (8 min)", items:[
-        {name:"Caminata rápida o bici", scheme:"5 min", note:"Subir pulsaciones de forma suave."},
-        {name:"Movilidad articular", scheme:"tobillos · caderas · torácica", note:"Rotaciones torácicas, balanceos de pierna, círculos de hombro."},
-      ]},
-      {label:"Activación", items:[
-        {name:"Puente de glúteos", scheme:"2 × 15", sets:2, reps:"15", v:"glute+bridge+exercise"},
-        {name:"Bird Dog", scheme:"2 × 10 / lado", sets:2, reps:"10/l", v:"bird+dog+exercise"},
-      ]},
-      {label:"Bloque principal", items:[
-        {name:"Sentadilla Goblet", scheme:"4 × 8", sets:4, reps:"8", rest:90, v:"goblet+squat", note:"<span class='tag'>Objetivo:</span> técnica antes que peso."},
-        {name:"Dominadas asistidas / Jalón al pecho", scheme:"4 × 8", sets:4, reps:"8", rest:90, v:"lat+pulldown"},
-        {name:"Press militar con mancuernas", scheme:"4 × 8", sets:4, reps:"8", rest:90, v:"dumbbell+shoulder+press"},
-        {name:"Peso muerto rumano", scheme:"3 × 10", sets:3, reps:"10", rest:90, v:"romanian+deadlift", note:"Bisagra de cadera, espalda neutra."},
-        {name:"Farmer Walk", scheme:"4 recorridos · 30 m", sets:4, reps:"30m", rest:90, v:"farmer+walk", note:"Carga pesada, tronco firme."},
-      ]},
-      {label:"Core", items:[
-        {name:"Pallof Press", scheme:"3 × 12", sets:3, reps:"12", rest:60, v:"pallof+press", note:"Anti-rotación: el core no debe girar."},
-        {name:"Plancha", scheme:"3 × 40 s", sets:3, reps:"40s", rest:60, v:"front+plank"},
-      ]},
-    ]
-  },
-  jue: {
-    icon:"💪", name:"Jueves", title:"Fuerza B", meta:"60–70 min · pierna unilateral + rotación",
-    goal:"Estabilidad, control corporal, trabajo unilateral y corrección de desequilibrios.",
-    blocks:[
-      {label:"Calentamiento (8 min)", items:[
-        {name:"Igual que el martes", scheme:"caminata + movilidad", note:"Tobillos, caderas, torácica, hombros."},
-      ]},
-      {label:"Principal", items:[
-        {name:"Bulgarian Split Squat", scheme:"3 × 8 / pierna", sets:3, reps:"8/l", rest:90, v:"bulgarian+split+squat", note:"Controla la rodilla, no la dejes caer hacia dentro."},
-        {name:"Remo con mancuerna", scheme:"4 × 10", sets:4, reps:"10", rest:90, v:"one+arm+dumbbell+row"},
-        {name:"Press inclinado con mancuernas", scheme:"4 × 8", sets:4, reps:"8", rest:90, v:"incline+dumbbell+press"},
-        {name:"Hip Thrust", scheme:"3 × 10", sets:3, reps:"10", rest:90, v:"hip+thrust", note:"Aprieta glúteo arriba, costillas abajo."},
-        {name:"Face Pull", scheme:"3 × 15", sets:3, reps:"15", rest:60, v:"face+pull", note:"Salud de hombro: clave para K1."},
-      ]},
-      {label:"Core", items:[
-        {name:"Dead Bug", scheme:"3 × 12", sets:3, reps:"12", rest:60, v:"dead+bug+exercise"},
-        {name:"Side Plank", scheme:"3 × 30 s / lado", sets:3, reps:"30s", rest:60, v:"side+plank"},
-      ]},
-    ]
-  },
-  sab: {
-    icon:"⚡", name:"Sábado", title:"Potencia + movilidad", meta:"explosivo, no agotador",
-    goal:"Convertir la fuerza en potencia útil para el K1. Calidad y velocidad, no fatiga. Pierna pesada fuera hoy.",
-    blocks:[
-      {label:"Calentamiento (10 min)", items:[
-        {name:"Movilidad + activación", scheme:"10 min", note:"Prepara cadera, tobillo y hombro antes de explotar."},
-      ]},
-      {label:"Potencia", items:[
-        {name:"Saltos al cajón", scheme:"3 × 5", sets:3, reps:"5", rest:120, v:"box+jump", note:"Aterrizaje suave y controlado. Baja caminando."},
-        {name:"Lanzamiento balón medicinal al suelo", scheme:"4 × 8", sets:4, reps:"8", rest:90, v:"medicine+ball+slam", note:"Máxima intención en cada lanzamiento."},
-        {name:"Kettlebell Swing", scheme:"4 × 12", sets:4, reps:"12", rest:90, v:"kettlebell+swing", note:"Potencia de cadera, no de brazos."},
-        {name:"Battle Rope", scheme:"6 × 20 s", sets:6, reps:"20s", rest:60, v:"battle+rope"},
-        {name:"Farmer Walk pesado", scheme:"3 vueltas", sets:3, reps:"vuelta", rest:90, v:"farmer+walk"},
-      ]},
-      {label:"Movilidad final (15 min)", items:[
-        {name:"Rutina de movilidad", scheme:"15 min", note:"Tobillos · caderas · flexores · isquios · torácica · hombros."},
-      ]},
-    ]
-  },
-  lun: {
-    icon:"🥊", name:"Lunes", title:"K1", info:true,
-    big:"🥊", head:"Día de K1",
-    lines:["Tu deporte manda hoy. Llega fresco y dale calidad técnica.","Hidrátate bien y cuida la movilidad de hombro y cadera en el calentamiento."],
-    list:["Buen calentamiento de hombros y cuello","Técnica sobre intensidad ciega","Estira al terminar para llegar bien al martes"]
-  },
-  mie: {
-    icon:"🥊", name:"Miércoles", title:"K1", info:true,
-    big:"🥊", head:"Día de K1",
-    lines:["Segunda sesión de la semana. Ya entrenaste fuerza el martes: hoy escucha al cuerpo.","Si notas fatiga, baja un punto la intensidad — la constancia gana."],
-    list:["Movilidad de cadera y tobillo previa","Cuida rodillas en los desplazamientos","Hidratación y respiración"]
-  },
-  vie: {
-    icon:"🏊", name:"Viernes", title:"Piscina", info:true,
-    big:"🏊", head:"Recuperación activa",
-    lines:["Sesión <span class='hl'>muy suave</span> de 20–30 min.","Céntrate en técnica, respiración y movilidad en el agua. Que NO sea un entreno intenso: hay que llegar recuperado al sábado."],
-    list:["20–30 min máximo","Nado relajado + respiración","Movilidad de hombro en el agua","Sin esfuerzo máximo"]
-  },
-  dom: {
-    icon:"😴", name:"Domingo", title:"Descanso", info:true,
-    big:"😴", head:"Descanso total",
-    lines:["El músculo crece y el sistema nervioso se recupera hoy.","Camina, estira suave si quieres, duerme bien y come real."],
-    list:["Sueño de calidad","Comida real, cena ligera","Mate en lugar de exceso de café","Recupera para empezar fuerte el lunes"]
-  },
-};
+Trabajo en
+Abierto a oportunidades remotas en Europa como:
 
-const ORDER = ["lun","mar","mie","jue","vie","sab","dom"];
-const STORE = "k1train_v1";
+Demand Planner / Data Analyst con IA
+Procurement Specialist
+Operations Coordinator
+en empresas de food, D2C, retail o logística que valoren a alguien que entienda las operaciones por dentro y construya las herramientas que faltan.
 
-/* ---------- ESTADO ---------- */
-let data = {};
-try{ data = JSON.parse(localStorage.getItem(STORE)) || {}; }catch(e){ data = {}; }
-function save(){ try{ localStorage.setItem(STORE, JSON.stringify(data)); }catch(e){} }
-function dget(day, ex){
-  data[day] = data[day] || {};
-  data[day][ex] = data[day][ex] || {sets:[], weight:"", rpe:""};
-  return data[day][ex];
-}
+Contacto
+📩 bonavitaalan@gmail.com
 
-/* día por defecto: el de hoy */
-const todayMap = ["dom","lun","mar","mie","jue","vie","sab"];
-let current = todayMap[new Date().getDay()];
+🔗 LinkedIn
 
-/* ---------- RENDER DÍAS ---------- */
-const daysEl = document.getElementById("days");
-function renderDays(){
-  daysEl.innerHTML = "";
-  ORDER.forEach(d=>{
-    const p = PROGRAM[d];
-    const b = document.createElement("button");
-    b.className = "day-btn" + (d===current?" active":"");
-    b.innerHTML = `<span class="ico">${p.icon}</span><span>${p.title}</span><span class="dname">${p.name.slice(0,3)}</span>`;
-    b.onclick = ()=>{ current=d; renderDays(); renderContent(); window.scrollTo({top:0,behavior:"smooth"}); };
-    daysEl.appendChild(b);
-  });
-}
-
-/* ---------- RENDER CONTENIDO ---------- */
-const contentEl = document.getElementById("content");
-function exKey(bi,ii){ return bi+"_"+ii; }
-
-function renderContent(){
-  const p = PROGRAM[current];
-  if(p.info){ renderInfo(p); document.getElementById("resetDay").style.display="none"; return; }
-  document.getElementById("resetDay").style.display="block";
-
-  let html = `
-    <div class="progress-bar"><div class="progress-fill" id="pfill"></div></div>
-    <div class="progress-lbl" id="plbl"></div>
-    <div class="session-head"><h2>${p.icon} ${p.title}</h2><span class="meta">${p.meta}</span></div>
-    <div class="session-goal">🎯 ${p.goal}</div>
-    <div class="principle">💡 Termina con la sensación de que podrías haber hecho una serie más.</div>
-  `;
-
-  let exCounter = 0;
-  p.blocks.forEach((blk,bi)=>{
-    html += `<div class="blk">${blk.label}</div>`;
-    blk.items.forEach((it,ii)=>{
-      const key = exKey(bi,ii);
-      const st = dget(current,key);
-      const nSets = it.sets || 0;
-      const trackable = nSets>0;
-      const done = nSets>0 && st.sets.filter(Boolean).length===nSets;
-      const badge = trackable ? (++exCounter) : "•";
-      let setsHtml = "";
-      if(nSets>0){
-        for(let s=0;s<nSets;s++){
-          const on = st.sets[s] ? " on":"";
-          setsHtml += `<div class="set-chip${on}" data-k="${key}" data-s="${s}"><span class="sn">Serie ${s+1}</span><span class="sr">${it.reps||"✓"}</span></div>`;
-        }
-      }
-      const restBtn = it.rest ? `<button class="btn rest" data-rest="${it.rest}">⏱️ Descanso ${it.rest}s</button>` : "";
-      html += `
-      <div class="ex${done?" complete":""}" data-ex="${key}">
-        <div class="ex-head" data-toggle>
-          <div class="ex-num">${badge}</div>
-          <div class="ex-title"><div class="name">${it.name}</div><div class="scheme">${it.scheme||""}</div></div>
-          <div class="chev">▶</div>
-        </div>
-        <div class="ex-body">
-          ${it.note?`<div class="ex-note">${it.note}</div>`:""}
-          ${trackable?`<div class="sets">${setsHtml}</div>`:""}
-          ${trackable?`<div class="inputs">
-            <div class="field"><label>Peso (kg)</label><input type="text" inputmode="decimal" placeholder="—" data-w="${key}" value="${st.weight||""}"></div>
-            <div class="field"><label>RPE / esfuerzo</label>
-              <select data-r="${key}">
-                <option value="">—</option>
-                ${[6,7,8,9,10].map(n=>`<option value="${n}" ${st.rpe==n?"selected":""}>RPE ${n}</option>`).join("")}
-              </select></div>
-          </div>`:""}
-          <div class="ex-actions">
-            ${it.v?`<a class="btn video" href="${yt(it.v)}" target="_blank" rel="noopener">▶︎ Ver vídeo</a>`:""}
-            ${restBtn}
-          </div>
-        </div>
-      </div>`;
-    });
-  });
-
-  contentEl.innerHTML = html;
-  wire();
-  updateProgress();
-}
-
-function renderInfo(p){
-  contentEl.innerHTML = `
-    <div class="session-head"><h2>${p.icon} ${p.title}</h2><span class="meta">${p.name}</span></div>
-    <div class="info-card">
-      <div class="big">${p.big}</div>
-      <h3>${p.head}</h3>
-      ${p.lines.map(l=>`<p>${l}</p>`).join("")}
-      <ul>${p.list.map(li=>`<li>${li}</li>`).join("")}</ul>
-    </div>`;
-}
-
-/* ---------- WIRE EVENTOS ---------- */
-function wire(){
-  // toggle desplegable
-  contentEl.querySelectorAll("[data-toggle]").forEach(h=>{
-    h.addEventListener("click", e=>{
-      h.closest(".ex").classList.toggle("open");
-    });
-  });
-  // series
-  contentEl.querySelectorAll(".set-chip").forEach(c=>{
-    c.addEventListener("click", ()=>{
-      const k=c.dataset.k, s=+c.dataset.s;
-      const st=dget(current,k);
-      st.sets[s] = !st.sets[s];
-      c.classList.toggle("on", st.sets[s]);
-      save();
-      // marca completo
-      const exEl = c.closest(".ex");
-      const total = exEl.querySelectorAll(".set-chip").length;
-      const on = exEl.querySelectorAll(".set-chip.on").length;
-      exEl.classList.toggle("complete", on===total && total>0);
-      updateProgress();
-      if(st.sets[s]) tick();
-    });
-  });
-  // peso
-  contentEl.querySelectorAll("[data-w]").forEach(inp=>{
-    inp.addEventListener("input", ()=>{ dget(current,inp.dataset.w).weight=inp.value; save(); });
-  });
-  // rpe
-  contentEl.querySelectorAll("[data-r]").forEach(sel=>{
-    sel.addEventListener("change", ()=>{ dget(current,sel.dataset.r).rpe=sel.value; save(); });
-  });
-  // botones de descanso por ejercicio
-  contentEl.querySelectorAll("[data-rest]").forEach(b=>{
-    b.addEventListener("click", e=>{ e.stopPropagation(); openTimer(+b.dataset.rest); });
-  });
-}
-
-function updateProgress(){
-  const p = PROGRAM[current];
-  if(p.info) return;
-  let total=0, done=0;
-  p.blocks.forEach((blk,bi)=>blk.items.forEach((it,ii)=>{
-    if(it.sets){ total+=it.sets; const st=dget(current,exKey(bi,ii)); done+=st.sets.filter(Boolean).length; }
-  }));
-  const pct = total? Math.round(done/total*100):0;
-  const f=document.getElementById("pfill"), l=document.getElementById("plbl");
-  if(f) f.style.width=pct+"%";
-  if(l) l.textContent = `${done}/${total} series · ${pct}%`;
-}
-
-/* ---------- TEMPORIZADOR ---------- */
-const ov=document.getElementById("timerOv"), numEl=document.getElementById("timerNum"),
-      ring=document.getElementById("ringFill"), toggleBtn=document.getElementById("timerToggle");
-const CIRC=691;
-let tDur=90, tLeft=90, tInt=null, tRunning=false;
-
-function setPreset(v){
-  tDur=v; tLeft=v; tRunning=false; clearInterval(tInt);
-  document.querySelectorAll(".tp").forEach(b=>b.classList.toggle("sel", +b.dataset.t===v));
-  drawTimer(); toggleBtn.textContent="Iniciar";
-}
-function drawTimer(){
-  numEl.textContent = tLeft;
-  ring.style.strokeDashoffset = CIRC*(1 - tLeft/tDur);
-}
-function openTimer(v){
-  if(v) setPreset(v);
-  ov.classList.add("show");
-  startTimer();
-}
-function startTimer(){
-  if(tRunning) return;
-  if(tLeft<=0) tLeft=tDur;
-  tRunning=true; toggleBtn.textContent="Pausar";
-  tInt=setInterval(()=>{
-    tLeft--; drawTimer();
-    if(tLeft<=0){
-      clearInterval(tInt); tRunning=false; toggleBtn.textContent="Iniciar";
-      buzz(); ring.style.stroke="#3ad29f"; numEl.textContent="¡Ya!";
-      setTimeout(()=>{ ring.style.stroke="#ff5a3c"; tLeft=tDur; drawTimer(); }, 1500);
-    }
-  },1000);
-}
-toggleBtn.onclick=()=>{
-  if(tRunning){ clearInterval(tInt); tRunning=false; toggleBtn.textContent="Reanudar"; }
-  else startTimer();
-};
-document.getElementById("timerClose").onclick=()=>{ clearInterval(tInt); tRunning=false; ov.classList.remove("show"); };
-document.querySelectorAll(".tp").forEach(b=> b.onclick=()=>{ setPreset(+b.dataset.t); startTimer(); });
-
-function buzz(){ if(navigator.vibrate) navigator.vibrate([200,100,200,100,300]); beep(); }
-function tick(){ if(navigator.vibrate) navigator.vibrate(15); }
-
-/* beep con WebAudio (offline, sin archivos) */
-let actx=null;
-function beep(){
-  try{
-    actx = actx || new (window.AudioContext||window.webkitAudioContext)();
-    [0,0.18,0.36].forEach(t=>{
-      const o=actx.createOscillator(), g=actx.createGain();
-      o.frequency.value=880; o.connect(g); g.connect(actx.destination);
-      g.gain.setValueAtTime(0.001, actx.currentTime+t);
-      g.gain.exponentialRampToValueAtTime(0.4, actx.currentTime+t+0.02);
-      g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime+t+0.15);
-      o.start(actx.currentTime+t); o.stop(actx.currentTime+t+0.16);
-    });
-  }catch(e){}
-}
-
-/* ---------- RESET DÍA ---------- */
-document.getElementById("resetDay").onclick=()=>{
-  if(confirm("¿Borrar las series, pesos y RPE registrados de "+PROGRAM[current].title+"?")){
-    delete data[current]; save(); renderContent(); showToast("Día reiniciado");
-  }
-};
-
-/* ---------- TOAST ---------- */
-const toastEl=document.getElementById("toast"); let toastT=null;
-function showToast(m){ toastEl.textContent=m; toastEl.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>toastEl.classList.remove("show"),1800); }
-
-/* ---------- INIT ---------- */
-renderDays();
-renderContent();
-drawTimer();
-
-/* ---------- OFFLINE: cachear este archivo vía Service Worker embebido ---------- */
-if("serviceWorker" in navigator){
-  const swCode = `
-    const C="k1train-cache-v1";
-    self.addEventListener("install", e=>{ self.skipWaiting(); });
-    self.addEventListener("activate", e=>{ e.waitUntil(self.clients.claim()); });
-    self.addEventListener("fetch", e=>{
-      if(e.request.method!=="GET") return;
-      e.respondWith(
-        caches.open(C).then(c=>
-          fetch(e.request).then(r=>{ c.put(e.request, r.clone()); return r; })
-          .catch(()=> c.match(e.request).then(m=> m || c.match("./") ))
-        )
-      );
-    });`;
-  try{
-    const blob=new Blob([swCode],{type:"text/javascript"});
-    navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
-  }catch(e){}
-}
-</script>
-</body>
-</html>
+💻 github.com/Alanb19
